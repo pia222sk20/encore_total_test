@@ -1,0 +1,1179 @@
+
+[데이터분석_머신러닝_딥러닝_종합실습_이규영]_복습문제
+
+Part I: 데이터 처리 및 탐색 역량 강화
+Section 1: 데이터 분석 기본
+
+문제 1.1: NumPy를 활용한 벡터 및 행렬 연산
+
+●	지시사항:
+1.	크기가 3인 1차원 배열(벡터) v1과 v2를 각각 , 으로 생성하십시오.
+2.	두 벡터의 요소별 곱셈(element-wise multiplication) 결과를 출력하십시오.
+3.	두 벡터의 벡터 내적(dot product) 결과를 출력하십시오.
+4.	2×3 형태의 행렬 m1과 3×2 형태의 행렬 m2를 임의의 값으로 생성하십시오.
+5.	두 행렬의 행렬 곱셈(m1 @ m2) 결과를 출력하고, 결과 행렬의 형태(shape)를 확인하십시오.
+
+●	모범 답안:
+
+import numpy as np
+
+# 1. 벡터 생성
+v1 = np.array()
+v2 = np.array()
+print(f"v1: {v1}")
+print(f"v2: {v2}")
+print("-" * 30)
+
+# 2. 요소별 곱셈
+element_wise_product = v1 * v2
+print(f"요소별 곱셈 결과: {element_wise_product}")
+# 각 위치의 요소끼리 곱셈을 수행합니다. 결과는 같은 크기의 벡터입니다.
+# [1*4, 2*5, 3*6] = 
+
+# 3. 벡터 내적
+dot_product = np.dot(v1, v2)
+# dot_product_alt = v1 @ v2 # @ 연산자로도 내적/행렬곱 수행 가능
+print(f"벡터 내적 결과: {dot_product}")
+# 요소별 곱셈의 합입니다. 결과는 스칼라(하나의 숫자)입니다.
+# 1*4 + 2*5 + 3*6 = 4 + 10 + 18 = 32
+print("-" * 30)
+
+# 4. 행렬 생성
+m1 = np.array([, ]) # 2x3 행렬
+m2 = np.array([, , ]) # 3x2 행렬
+print(f"m1 (shape: {m1.shape}):\n{m1}")
+print(f"m2 (shape: {m2.shape}):\n{m2}")
+print("-" * 30)
+
+# 5. 행렬 곱셈
+matrix_product = np.dot(m1, m2)
+# matrix_product_alt = m1 @ m2
+print(f"행렬 곱셈 결과 (shape: {matrix_product.shape}):\n{matrix_product}")
+# 행렬 곱셈의 결과 형태는 (m x n) @ (n x p) -> (m x p)가 됩니다.
+# 여기서는 (2 x 3) @ (3 x 2) -> (2 x 2) 행렬이 생성됩니다.
+
+---------------------------------------------------------------------------------------------
+
+문제 1.2: NumPy 브로드캐스팅을 이용한 데이터 표준화
+
+
+●	지시사항:
+1.	np.random.rand(5, 3)을 사용하여 5개의 샘플과 3개의 특성을 가진 임의의 데이터 행렬 X를 생성하십시오.
+2.	X의 각 열(특성)에 대한 평균(mean)과 표준편차(std)를 계산하십시오.
+3.	브로드캐스팅을 활용하여 X의 모든 요소에 표준화 공식 Z=σ(x−μ) 를 적용하십시오. 여기서 μ는 특성별 평균, σ는 특성별 표준편차입니다.
+4.	표준화된 행렬 Z의 각 열의 평균과 표준편차가 각각 0과 1에 가까운 값인지 확인하십시오.
+
+●	모범 답안:
+
+import numpy as np
+
+# 1. 임의의 데이터 생성
+np.random.seed(42) # 재현성을 위한 시드 설정
+X = np.random.rand(5, 3) * 10 # 0~10 사이의 값으로 스케일 조정
+print(f"원본 데이터 X (shape: {X.shape}):\n{X}")
+print("-" * 30)
+
+# 2. 각 열(특성)의 평균과 표준편차 계산
+# axis=0은 각 열에 대한 연산을 의미합니다.
+mean_X = X.mean(axis=0)
+std_X = X.std(axis=0)
+print(f"각 열의 평균 (shape: {mean_X.shape}): {mean_X}")
+print(f"각 열의 표준편차 (shape: {std_X.shape}): {std_X}")
+print("-" * 30)
+
+# 3. 브로드캐스팅을 이용한 표준화
+# X (5, 3) - mean_X (3,)
+# NumPy는 mean_X를 (5, 3) 형태로 "확장"하여 연산을 수행합니다.
+# 이것이 브로드캐스팅입니다.
+Z = (X - mean_X) / std_X
+print(f"표준화된 데이터 Z (shape: {Z.shape}):\n{Z}")
+print("-" * 30)
+
+# 4. 결과 확인
+# 부동소수점 연산으로 인해 정확히 0과 1이 아닐 수 있습니다.
+mean_Z = Z.mean(axis=0)
+std_Z = Z.std(axis=0)
+print(f"표준화된 데이터의 열별 평균: {mean_Z}")
+print(f"표준화된 데이터의 열별 표준편차: {std_Z}")
+
+---------------------------------------------------------------------------------------------
+
+문제 1.3: Pandas DataFrame 생성 및 조건부 인덱싱
+
+●	지시사항:
+1.	sklearn.datasets에서 load_iris 함수를 임포트하고, iris 데이터를 로드하십시오.
+2.	iris.data와 iris.feature_names를 사용하여 Pandas DataFrame을 생성하십시오. target 열도 추가하십시오.
+3.	Boolean indexing을 사용하여 sepal length (cm)가 5.0보다 크고 species가 0 (setosa)인 모든 행을 추출하십시오. (단, target 열을 species로 간주)
+4.	loc 인덱서를 사용하여 3번 조건과 동일한 데이터를 추출하십시오.
+5.	iloc 인덱서를 사용하여 데이터프레임의 첫 5개 행과 첫 2개 열(sepal length (cm), sepal width (cm))을 추출하십시오.
+
+●	모범 답안:
+
+import pandas as pd
+from sklearn.datasets import load_iris
+
+# 1. iris 데이터 로드
+iris = load_iris()
+
+# 2. Pandas DataFrame 생성
+# iris.data는 특성 데이터, iris.feature_names는 컬럼명
+df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+df['species'] = iris.target # 정답(품종) 열 추가
+print("Iris DataFrame 상위 5개 행:")
+print(df.head())
+print("-" * 50)
+
+# 3. Boolean indexing
+condition = (df['sepal length (cm)'] > 5.0) & (df['species'] == 0)
+result_bool = df[condition]
+print("Boolean Indexing 결과:")
+print(result_bool)
+print("-" * 50)
+
+# 4. loc 인덱서 사용
+# loc는 레이블(컬럼명, 인덱스명) 기반으로 데이터를 선택합니다.
+# 조건식은 boolean indexing과 동일하게 사용 가능합니다.
+result_loc = df.loc[condition]
+print("loc Indexer 결과:")
+print(result_loc)
+print("-" * 50)
+
+# 5. iloc 인덱서 사용
+# iloc는 정수 위치(integer position) 기반으로 데이터를 선택합니다.
+# [행, 열] 순서로 슬라이싱합니다.
+result_iloc = df.iloc[0:5, 0:2] # 0~4행, 0~1열
+print("iloc Indexer 결과 (첫 5행, 첫 2열):")
+print(result_iloc)
+
+---------------------------------------------------------------------------------------------
+문제 1.4: Pandas GroupBy를 활용한 집계 데이터 분석
+
+●	지시사항:
+1.	Seaborn 라이브러리에 내장된 titanic 데이터셋을 로드하십시오.
+2.	groupby를 사용하여 pclass (좌석 등급) 별 survived (생존 여부)의 평균(생존율)을 계산하십시오.
+3.	groupby를 사용하여 sex (성별)와 pclass (좌석 등급) 두 가지 기준으로 그룹화하고, 각 그룹의 평균 age (나이)와 최대 fare (요금)를 계산하십시오. (agg 함수 사용)
+4.	3번의 결과를 통해 어떤 그룹의 평균 나이가 가장 많고, 최대 요금이 가장 높았는지 분석하십시오.
+
+●	모범 답안:
+
+import pandas as pd
+import seaborn as sns
+
+# 1. titanic 데이터 로드
+titanic = sns.load_dataset('titanic')
+print("Titanic 데이터 정보:")
+titanic.info()
+print("-" * 50)
+
+# 2. 좌석 등급(pclass)별 생존율 계산
+# survived 열은 0(사망), 1(생존)이므로 평균을 구하면 생존율이 됩니다.
+survival_rate_by_pclass = titanic.groupby('pclass')['survived'].mean()
+print("좌석 등급별 생존율:")
+print(survival_rate_by_pclass)
+# 결과 해석: 1등석의 생존율이 가장 높고, 3등석이 가장 낮음을 알 수 있습니다.
+print("-" * 50)
+
+# 3. 성별(sex)과 좌석 등급(pclass)별 나이 및 요금 집계
+# agg() 함수를 사용하면 여러 집계 함수를 동시에 적용할 수 있습니다.
+agg_result = titanic.groupby(['sex', 'pclass']).agg(
+    mean_age=('age', 'mean'),
+    max_fare=('fare', 'max')
+)
+print("성별 및 좌석 등급별 평균 나이와 최대 요금:")
+print(agg_result)
+print("-" * 50)
+
+# 4. 결과 분석
+print("분석 결과:")
+print(f"가장 평균 나이가 많은 그룹:\n{agg_result['mean_age'].idxmax()} -> {agg_result['mean_age'].max():.2f}세")
+print(f"가장 최대 요금이 높은 그룹:\n{agg_result['max_fare'].idxmax()} -> ${agg_result['max_fare'].max():.2f}")
+# 1등석 남성의 평균 나이가 가장 많았고, 1등석 여성 그룹에서 가장 비싼 요금을 낸 승객이 있었습니다.
+
+Section 2: 데이터 전처리
+
+---------------------------------------------------------------------------------------------
+문제 2.1: 결측값 식별 및 처리 전략 비교
+
+●	지시사항:
+1.	titanic 데이터셋을 로드하고 age 열의 결측값 개수와 전체 데이터 대비 비율을 계산하십시오.
+2.	전략 1 (삭제): age 열에 결측값이 있는 행을 모두 삭제한 후, 남은 데이터의 행 개수를 출력하십시오.
+3.	전략 2 (대체): 원본 데이터에서 age 열의 결측값을 전체 age의 평균값으로 대체한 시리즈와 중앙값으로 대체한 시리즈를 각각 만드십시오.
+4.	원본 age 분포, 평균값으로 대체한 age 분포, 중앙값으로 대체한 age 분포를 하나의 그림에 히스토그램으로 시각화하여 비교하고 차이점을 분석하십시오.
+
+●	모범 답안:
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# 1. 데이터 로드 및 결측값 확인
+titanic = sns.load_dataset('titanic')
+missing_age_count = titanic['age'].isnull().sum()
+total_rows = len(titanic)
+missing_ratio = (missing_age_count / total_rows) * 100
+print(f"원본 데이터 행 개수: {total_rows}")
+print(f"'age' 열의 결측값 개수: {missing_age_count} ({missing_ratio:.2f}%)")
+print("-" * 50)
+
+# 2. 전략 1: 결측값 행 삭제
+titanic_dropped = titanic.dropna(subset=['age'])
+print(f"결측값 행 삭제 후 데이터 행 개수: {len(titanic_dropped)}")
+print(f"손실된 데이터 행 개수: {total_rows - len(titanic_dropped)}")
+print("-" * 50)
+
+# 3. 전략 2: 평균값/중앙값으로 대체
+mean_age = titanic['age'].mean()
+median_age = titanic['age'].median()
+print(f"전체 'age' 평균값: {mean_age:.2f}")
+print(f"전체 'age' 중앙값: {median_age:.2f}")
+
+age_filled_mean = titanic['age'].fillna(mean_age)
+age_filled_median = titanic['age'].fillna(median_age)
+
+# 4. 시각화를 통한 분포 비교
+plt.figure(figsize=(15, 5))
+plt.style.use('seaborn-v0_8-whitegrid')
+
+# 원본 분포 (결측값 제외)
+plt.subplot(1, 3, 1)
+sns.histplot(titanic['age'].dropna(), kde=True, bins=30)
+plt.title('Original Age Distribution (NaNs removed)')
+
+# 평균값 대체 분포
+plt.subplot(1, 3, 2)
+sns.histplot(age_filled_mean, kde=True, bins=30, color='orange')
+plt.title('Age Distribution (Filled with Mean)')
+
+# 중앙값 대체 분포
+plt.subplot(1, 3, 3)
+sns.histplot(age_filled_median, kde=True, bins=30, color='green')
+plt.title('Age Distribution (Filled with Median)')
+
+plt.tight_layout()
+plt.show()
+---------------------------------------------------------------------------------------------
+문제 2.2: IQR을 이용한 이상값 탐지 및 처리
+
+●	지시사항:
+1.	sklearn.datasets에서 fetch_openml을 사용하여 boston 주택 가격 데이터셋을 로드하고, CRIM (1인당 범죄율) 열을 시리즈로 추출하십시오.
+2.	CRIM 열의 분포를 박스 플롯(Box Plot)으로 시각화하여 이상값을 직관적으로 확인하십시오.
+3.	NumPy를 사용하여 1사분위수(Q1), 3사분위수(Q3), IQR(Q3−Q1)을 계산하십시오.
+4.	IQR을 이용한 이상값 경계(lower fence: Q1−1.5×IQR, upper fence: Q3+1.5×IQR)를 계산하고, 이 경계를 벗어나는 이상값의 개수를 출력하십시오.
+5.	이상값들을 상한 경계값(upper fence)으로 치환(capping)하고, 처리 후의 박스 플롯을 원본과 비교하여 시각화하십시오.
+
+●	모범 답안:
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import fetch_openml
+
+# 1. 보스턴 주택 가격 데이터 로드
+# fetch_openml은 시간이 걸릴 수 있습니다.
+boston = fetch_openml(name="boston", version=1, as_frame=True)
+df = boston.frame
+crim = df
+
+# 2. 박스 플롯 시각화
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+plt.boxplot(crim)
+plt.title('Original CRIM Box Plot')
+plt.ylabel('CRIM')
+
+# 3. IQR 및 사분위수 계산
+Q1 = np.percentile(crim, 25)
+Q3 = np.percentile(crim, 75)
+IQR = Q3 - Q1
+print(f"Q1 (25th percentile): {Q1:.4f}")
+print(f"Q3 (75th percentile): {Q3:.4f}")
+print(f"IQR (Interquartile Range): {IQR:.4f}")
+print("-" * 50)
+
+# 4. 이상값 경계 계산 및 개수 확인
+lower_fence = Q1 - 1.5 * IQR
+upper_fence = Q3 + 1.5 * IQR
+print(f"Lower Fence: {lower_fence:.4f}")
+print(f"Upper Fence: {upper_fence:.4f}")
+
+outliers = crim[(crim < lower_fence) | (crim > upper_fence)]
+print(f"\n이상값 개수: {len(outliers)}")
+print("상위 5개 이상값:\n", outliers.sort_values(ascending=False).head())
+print("-" * 50)
+
+# 5. 이상값 처리 (Capping) 및 시각화 비교
+crim_capped = crim.copy()
+# 상한 경계를 초과하는 값들을 상한 경계값으로 변경
+crim_capped[crim_capped > upper_fence] = upper_fence
+
+plt.subplot(1, 2, 2)
+plt.boxplot(crim_capped)
+plt.title('Capped CRIM Box Plot')
+plt.ylabel('CRIM')
+
+plt.tight_layout()
+plt.show()
+
+print("이상값 처리 후 최대값:", crim_capped.max())
+---------------------------------------------------------------------------------------------
+문제 2.3: Scikit-learn을 활용한 데이터 스케일링 비교
+
+●	지시사항:
+1.	sklearn.datasets에서 load_wine 데이터셋을 로드하고, alcohol과 malic_acid 두 특성만 추출하여 DataFrame을 만드십시오.
+2.	스케일링 전 원본 데이터의 분포를 산점도(scatter plot)로 시각화하십시오. 각 축의 범위를 확인하십시오.
+3.	StandardScaler를 사용하여 데이터를 표준화(Standardization)하고, 결과를 산점도로 시각화하십시오.
+4.	MinMaxScaler를 사용하여 데이터를 정규화(Normalization)하고, 결과를 산점도로 시각화하십시오.
+5.	세 개의 산점도를 비교하며 StandardScaler와 MinMaxScaler의 변환 방식과 결과의 차이점을 설명하십시오.
+
+●	모범 답안:
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_wine
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+
+# 1. 와인 데이터셋 로드 및 특성 선택
+wine = load_wine()
+df = pd.DataFrame(wine.data, columns=wine.feature_names)[['alcohol', 'malic_acid']]
+
+# 2. 스케일링 전 데이터 시각화
+plt.figure(figsize=(18, 5))
+plt.subplot(1, 3, 1)
+plt.scatter(df['alcohol'], df['malic_acid'])
+plt.title('Original Data')
+plt.xlabel('Alcohol')
+plt.ylabel('Malic Acid')
+plt.grid(True)
+
+# 3. StandardScaler 적용 및 시각화
+scaler_std = StandardScaler()
+df_std = scaler_std.fit_transform(df)
+
+plt.subplot(1, 3, 2)
+plt.scatter(df_std[:, 0], df_std[:, 1])
+plt.title('StandardScaler Transformed Data')
+plt.xlabel('Alcohol (Standardized)')
+plt.ylabel('Malic Acid (Standardized)')
+plt.axhline(0, color='grey', linestyle='--')
+plt.axvline(0, color='grey', linestyle='--')
+plt.grid(True)
+
+# 4. MinMaxScaler 적용 및 시각화
+scaler_minmax = MinMaxScaler()
+df_minmax = scaler_minmax.fit_transform(df)
+
+plt.subplot(1, 3, 3)
+plt.scatter(df_minmax[:, 0], df_minmax[:, 1])
+plt.title('MinMaxScaler Transformed Data')
+plt.xlabel('Alcohol (Normalized)')
+plt.ylabel('Malic Acid (Normalized)')
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
+
+# 5. 결과 비교 분석
+print("원본 데이터 기술 통계:\n", df.describe().loc[['mean', 'std', 'min', 'max']])
+print("\nStandardScaler 변환 후 기술 통계:\n", pd.DataFrame(df_std).describe().loc[['mean', 'std', 'min', 'max']])
+print("\nMinMaxScaler 변환 후 기술 통계:\n", pd.DataFrame(df_minmax).describe().loc[['mean', 'std', 'min', 'max']])
+
+
+Part II: 머신러닝 모델 구현 및 응용
+Section 3: 데이터 시각화
+---------------------------------------------------------------------------------------------
+문제 3.1: Matplotlib을 활용한 다중 플롯 생성
+
+●	지시사항:
+1.	iris 데이터셋을 로드하여 Pandas DataFrame으로 만드십시오.
+2.	plt.subplots(2, 2, figsize=(12, 10))를 사용하여 2x2 형태의 subplot 그리드를 생성하십시오.
+3.	생성된 4개의 axes에 다음 플롯을 각각 그리십시오.
+■	ax: sepal length (cm)의 히스토그램 (bins=20)
+■	ax: sepal width (cm)의 박스 플롯
+■	ax: petal length (cm)와 petal width (cm)의 산점도
+■	ax: 각 품종(species)별 데이터 개수를 나타내는 막대 그래프
+4.	각 플롯에 적절한 제목과 축 레이블을 추가하십시오.
+
+●	모범 답안:
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+
+# 1. 데이터 준비
+iris = load_iris()
+df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+df['species'] = iris.target
+
+# 2. 2x2 subplot 그리드 생성
+fig, ax = plt.subplots(2, 2, figsize=(12, 10))
+fig.suptitle('Comprehensive Iris Dataset Visualization', fontsize=16)
+
+# 3 & 4. 각 subplot에 플롯 그리기
+
+# ax: Sepal Length Histogram
+ax.hist(df['sepal length (cm)'], bins=20, color='skyblue', edgecolor='black')
+ax.set_title('Histogram of Sepal Length')
+ax.set_xlabel('Sepal Length (cm)')
+ax.set_ylabel('Frequency')
+
+# ax: Sepal Width Box Plot
+ax.boxplot(df['sepal width (cm)'])
+ax.set_title('Box Plot of Sepal Width')
+ax.set_ylabel('Sepal Width (cm)')
+ax.set_xticks() # x축 눈금 제거
+
+# ax: Petal Length vs Width Scatter Plot
+ax.scatter(df['petal length (cm)'], df['petal width (cm)'], c=df['species'])
+ax.set_title('Scatter Plot of Petal Length vs Width')
+ax.set_xlabel('Petal Length (cm)')
+ax.set_ylabel('Petal Width (cm)')
+
+# ax: Species Count Bar Plot
+species_counts = df['species'].value_counts().sort_index()
+ax.bar(iris.target_names, species_counts, color=['#ff9999','#66b3ff','#99ff99'])
+ax.set_title('Count of Each Species')
+ax.set_xlabel('Species')
+ax.set_ylabel('Count')
+
+plt.tight_layout(rect=[0, 0, 1, 0.96]) # suptitle과 겹치지 않도록 조정
+plt.show()
+---------------------------------------------------------------------------------------------
+문제 3.2: Seaborn을 활용한 다변량 데이터 관계 시각화
+
+●	지시사항:
+1.	titanic 데이터셋을 로드하고, 수치형 변수인 age, fare, pclass, survived 열만 선택하여 새로운 DataFrame을 만드십시오. 결측값은 해당 열의 중앙값으로 채우십시오.
+2.	seaborn.pairplot을 사용하여 위 4개 변수 간의 관계를 시각화하십시오. hue='survived' 옵션을 추가하여 생존 여부에 따라 색상을 다르게 표시하십시오.
+3.	4개 변수 간의 상관계수 행렬(correlation matrix)을 계산하십시오. (.corr() 메서드 사용)
+4.	seaborn.heatmap을 사용하여 상관계수 행렬을 시각화하십시오. annot=True, cmap='coolwarm' 옵션을 추가하여 히트맵에 수치를 표시하고 색상 맵을 지정하십시오.
+
+●	모범 답안:
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# 1. 데이터 준비
+titanic = sns.load_dataset('titanic')
+df_numeric = titanic[['age', 'fare', 'pclass', 'survived']].copy()
+
+# 'age' 열의 결측값을 중앙값으로 채우기
+df_numeric['age'].fillna(df_numeric['age'].median(), inplace=True)
+
+# 2. pairplot 시각화
+# pairplot은 시간이 다소 걸릴 수 있습니다.
+print("Generating pairplot...")
+sns.pairplot(df_numeric, hue='survived', palette='viridis')
+plt.suptitle('Pair Plot of Titanic Numeric Features by Survival', y=1.02)
+plt.show()
+
+# 3. 상관계수 행렬 계산
+corr_matrix = df_numeric.corr()
+print("\n상관계수 행렬:")
+print(corr_matrix)
+
+# 4. heatmap 시각화
+plt.figure(figsize=(8, 6))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=.5)
+plt.title('Correlation Matrix Heatmap')
+plt.show()
+
+---------------------------------------------------------------------------------------------
+Section 4: 머신러닝 모델 구현
+문제 4.1: 선형 회귀 모델 구현 및 성능 평가
+
+●	지시사항:
+1.	sklearn.datasets에서 fetch_california_housing 데이터를 로드하고, 훈련 데이터와 테스트 데이터로 분리하십시오 (테스트 데이터 비율 20%, random_state=42).
+2.	sklearn.linear_model의 LinearRegression 모델을 생성하고 훈련 데이터로 학습시키십시오.
+3.	학습된 모델을 사용하여 테스트 데이터의 주택 가격을 예측하십시오.
+4.	sklearn.metrics의 mean_squared_error와 r2_score를 사용하여 모델의 성능을 평가하고, 각 지표의 의미를 주석으로 설명하십시오.
+5.	실제 값과 예측 값을 비교하는 산점도를 시각화하여 모델의 예측 경향을 확인하십시오.
+
+●	모범 답안:
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# 1. 데이터 로드 및 분리
+housing = fetch_california_housing()
+X_train, X_test, y_train, y_test = train_test_split(
+    housing.data, housing.target, test_size=0.2, random_state=42
+)
+
+# 2. 모델 생성 및 학습
+model = LinearRegression()
+model.fit(X_train, y_train)
+print("선형 회귀 모델 학습 완료.")
+
+# 3. 테스트 데이터 예측
+y_pred = model.predict(X_test)
+
+# 4. 모델 성능 평가
+# MSE (Mean Squared Error): 오차 제곱의 평균. 작을수록 좋습니다.
+# 예측값과 실제값의 차이를 나타내며, 단위가 원래 값의 제곱이 됩니다.
+mse = mean_squared_error(y_test, y_pred)
+print(f"Mean Squared Error (MSE): {mse:.4f}")
+
+# R^2 (결정 계수): 모델이 데이터의 분산을 얼마나 잘 설명하는지를 나타내는 지표.
+# 1에 가까울수록 모델이 데이터를 잘 설명함을 의미합니다.
+r2 = r2_score(y_test, y_pred)
+print(f"R-squared (R²): {r2:.4f}")
+
+# 5. 예측 결과 시각화
+plt.figure(figsize=(8, 8))
+plt.scatter(y_test, y_pred, alpha=0.5)
+plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], 'r--', lw=2)
+plt.xlabel("Actual Prices")
+plt.ylabel("Predicted Prices")
+plt.title("Actual vs. Predicted Prices for California Housing")
+plt.grid(True)
+plt.show()
+---------------------------------------------------------------------------------------------
+문제 4.2: 로지스틱 회귀를 이용한 유방암 진단 분류
+●	지시사항:
+1.	sklearn.datasets에서 load_breast_cancer 데이터를 로드하십시오.
+2.	데이터의 스케일이 다양하므로, StandardScaler를 사용하여 특성 데이터를 표준화하십시오.
+3.	데이터를 훈련 세트와 테스트 세트로 분리하십시오.
+4.	LogisticRegression 모델을 학습시키고, 테스트 데이터에 대한 예측을 수행하십시오.
+5.	sklearn.metrics의 confusion_matrix와 classification_report를 사용하여 모델의 성능을 평가하고, 혼동 행렬의 각 요소(TN, FP, FN, TP)가 무엇을 의미하는지 주석으로 설명하십시오.
+
+●	모범 답안:
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, classification_report
+
+# 1. 데이터 로드
+cancer = load_breast_cancer()
+X, y = cancer.data, cancer.target
+
+# 2. 데이터 스케일링
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# 3. 데이터 분리
+X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, y, test_size=0.3, random_state=101
+)
+
+# 4. 모델 학습 및 예측
+model = LogisticRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+# 5. 성능 평가
+print("Confusion Matrix:")
+cm = confusion_matrix(y_test, y_pred)
+print(cm)
+#,
+# ]
+# TN (True Negative): 실제 Negative(악성)를 Negative로 올바르게 예측
+# FP (False Positive): 실제 Negative(악성)를 Positive(양성)로 잘못 예측 (Type I Error)
+# FN (False Negative): 실제 Positive(양성)를 Negative(악성)로 잘못 예측 (Type II Error) - **가장 위험**
+# TP (True Positive): 실제 Positive(양성)를 Positive로 올바르게 예측
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred, target_names=cancer.target_names))
+
+# 혼동 행렬 시각화
+plt.figure(figsize=(6, 5))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=cancer.target_names, yticklabels=cancer.target_names)
+plt.xlabel('Predicted Label')
+plt.ylabel('True Label')
+plt.title('Confusion Matrix')
+plt.show()
+---------------------------------------------------------------------------------------------
+문제 4.3: SVM 커널 비교 및 결정 경계 시각화
+
+●	지시사항:
+1.	iris 데이터셋에서 petal length (cm)와 petal width (cm) 두 특성만 사용하고, 타겟은 setosa와 versicolor 두 클래스(0, 1)만 선택하여 데이터를 준비하십시오.
+2.	SVC 모델에 kernel='linear'를 적용하여 학습시키십시오.
+3.	SVC 모델에 kernel='rbf'를 적용하여 학습시키십시오.
+4.	두 모델의 결정 경계를 하나의 그림에 나란히 시각화하여 비교하십시오. (결정 경계 시각화 코드는 제공된 템플릿 활용 가능)
+ 템플릿 코드
+●	def plot_decision_boundary(model, title):
+    x_min, x_max = _________
+    y_min, y_max = _________
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
+                           np.arange(y_min, y_max, 0.02))
+    Z = model.predict(_____, ______)
+    Z = Z.reshape(xx.shape)
+    plt.contourf(xx, yy, Z, alpha=0.4, cmap=plt.cm.coolwarm)
+    plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.coolwarm, s=20, edgecolors='k')
+    plt.xlabel('Petal Length (cm)')
+    plt.ylabel('Petal Width (cm)')
+    plt.title(title)
+
+●	모범 답안:
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.svm import SVC
+
+# 1. 데이터 준비
+iris = load_iris()
+X = iris.data[:, 2:4]  # Petal length and width
+y = iris.target
+
+# setosa와 versicolor 클래스만 선택
+X = X[(y == 0) | (y == 1)]
+y = y[(y == 0) | (y == 1)]
+
+# 2. Linear Kernel SVM 학습
+svm_linear = SVC(kernel='linear', C=1.0)
+svm_linear.fit(X, y)
+
+# 3. RBF Kernel SVM 학습
+svm_rbf = SVC(kernel='rbf', gamma=0.7, C=1.0)
+svm_rbf.fit(X, y)
+
+# 4. 결정 경계 시각화 함수
+def plot_decision_boundary(model, title):
+    x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
+    y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
+                           np.arange(y_min, y_max, 0.02))
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    plt.contourf(xx, yy, Z, alpha=0.4, cmap=plt.cm.coolwarm)
+    plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.coolwarm, s=20, edgecolors='k')
+    plt.xlabel('Petal Length (cm)')
+    plt.ylabel('Petal Width (cm)')
+    plt.title(title)
+
+# 시각화 실행
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plot_decision_boundary(svm_linear, 'SVC with Linear Kernel')
+
+plt.subplot(1, 2, 2)
+plot_decision_boundary(svm_rbf, 'SVC with RBF Kernel')
+
+plt.show()
+
+---------------------------------------------------------------------------------------------
+문제 4.4: 랜덤 포레스트를 이용한 특성 중요도 분석
+
+●	지시사항:
+1.	breast_cancer 데이터셋을 로드하십시오.
+2.	데이터를 훈련 세트와 테스트 세트로 분리하십시오.
+3.	RandomForestClassifier 모델을 생성하고 학습시키십시오 (n_estimators=100, random_state=42).
+4.	학습된 모델의 feature_importances_ 속성을 추출하여 특성 중요도를 확인하십시오.
+5.	Pandas 시리즈를 생성하여 특성 이름과 중요도를 매핑하고, 중요도 순으로 정렬하여 막대 그래프로 시각화하십시오.
+
+●	모범 답안:
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+
+# 1. 데이터 로드
+cancer = load_breast_cancer()
+X, y = cancer.data, cancer.target
+feature_names = cancer.feature_names
+
+# 2. 데이터 분리
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+# 3. 모델 학습
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# 4. 특성 중요도 추출
+importances = model.feature_importances_
+
+# 5. 특성 중요도 시각화
+feature_importances = pd.Series(importances, index=feature_names)
+feature_importances_sorted = feature_importances.sort_values(ascending=False)
+
+plt.figure(figsize=(10, 8))
+sns.barplot(x=feature_importances_sorted, y=feature_importances_sorted.index)
+plt.xlabel('Feature Importance Score')
+plt.ylabel('Features')
+plt.title("Visualizing Important Features in Breast Cancer Dataset")
+plt.show()
+
+print("상위 5개 중요 특성:")
+print(feature_importances_sorted.head())
+
+---------------------------------------------------------------------------------------------
+문제 4.5: PCA를 활용한 차원 축소 및 시각화
+.
+●	지시사항:
+1.	wine 데이터셋을 로드하십시오.
+2.	PCA는 스케일에 민감하므로, StandardScaler를 사용하여 데이터를 표준화하십시오.
+3.	sklearn.decomposition의 PCA를 n_components=2로 설정하여 2개의 주성분만 추출하도록 모델을 생성하고 학습 및 변환을 수행하십시오.
+4.	변환된 2차원 데이터를 각 와인 클래스(target)별로 색상을 다르게 하여 산점도로 시각화하십시오.
+5.	explained_variance_ratio_ 속성을 확인하여 두 주성분이 전체 데이터 분산의 몇 퍼센트를 설명하는지 출력하십시오.
+
+●	모범 답안:
+
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_wine
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+
+# 1. 데이터 로드
+wine = load_wine()
+X, y = wine.data, wine.target
+
+# 2. 데이터 표준화
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# 3. PCA 적용
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
+
+# 4. 차원 축소 결과 시각화
+plt.figure(figsize=(8, 6))
+scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap='viridis', edgecolor='k', alpha=0.8)
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.title('2D PCA of Wine Dataset')
+plt.legend(handles=scatter.legend_elements(), labels=wine.target_names)
+plt.grid(True)
+plt.show()
+
+# 5. 설명된 분산 확인
+explained_variance = pca.explained_variance_ratio_
+print(f"주성분 1이 설명하는 분산: {explained_variance*100:.2f}%")
+print(f"주성분 2가 설명하는 분산: {explained_variance*100:.2f}%")
+print(f"두 주성분이 설명하는 총 분산: {sum(explained_variance)*100:.2f}%")
+
+
+---------------------------------------------------------------------------------------------
+문제 4.6: K-means 군집화를 이용한 고객 세분화
+
+●	지시사항:
+1.	iris 데이터셋에서 정답(species)을 제외하고 특성 데이터만 사용하십시오.
+2.	sklearn.cluster의 KMeans 모델을 n_clusters=3으로 설정하여 생성하고 학습시키십시오.
+3.	labels_ 속성을 사용하여 각 데이터가 어떤 군집에 속하는지 확인하고, 실제 품종(species)과 군집화 결과를 비교하는 교차표(crosstab)를 만들어보십시오.
+4.	PCA를 사용하여 데이터를 2차원으로 축소한 후, K-means가 할당한 군집 레이블에 따라 색상을 다르게 하여 산점도로 시각화하십시오. 군집의 중심점(centroids)도 함께 표시하십시오.
+
+●	모범 답안:
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+
+# 1. 데이터 준비 (정답 레이블 제외)
+iris = load_iris()
+X = iris.data
+y_true = iris.target
+
+# 2. K-means 모델 학습
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+kmeans.fit(X)
+y_kmeans = kmeans.labels_
+
+# 3. 실제 레이블과 군집 결과 비교
+# crosstab을 통해 각 실제 클래스가 어떤 클러스터로 할당되었는지 확인
+df_comparison = pd.DataFrame({'true_label': y_true, 'kmeans_cluster': y_kmeans})
+crosstab = pd.crosstab(df_comparison['true_label'], df_comparison['kmeans_cluster'])
+print("교차표 (실제 레이블 vs K-means 군집):")
+print(crosstab)
+# 결과 해석: 0번 클래스(setosa)는 1번 군집으로 완벽하게 분류되었고,
+# 1번, 2번 클래스는 0번, 2번 군집에 대부분 할당되었으나 일부 혼동이 있음을 알 수 있다.
+
+# 4. 군집 결과 시각화
+# 시각화를 위해 PCA로 2차원 축소
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X)
+
+plt.figure(figsize=(8, 6))
+# 군집별 데이터 포인트 시각화
+plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y_kmeans, s=50, cmap='viridis', alpha=0.7)
+
+# 군집 중심점 시각화
+centers = pca.transform(kmeans.cluster_centers_)
+plt.scatter(centers[:, 0], centers[:, 1], c='red', s=200, alpha=0.9, marker='X', label='Centroids')
+
+plt.title('K-means Clustering of Iris Dataset (PCA-reduced)')
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+---------------------------------------------------------------------------------------------
+Part III: 딥러닝 기초 및 모델 검증
+Section 5: 딥러닝 기초 구현
+문제 5.1: NumPy 기반 퍼셉트론 구현 (AND/OR 게이트)
+
+●	지시사항:
+1.	입력 x1, x2와 가중치 w1, w2, 편향 b를 받는 퍼셉트론 함수를 정의하십시오.
+2.	함수 내에서 가중치 합(w1x1+w2x2+b)을 계산하고, 이 값이 0보다 크면 1을, 그렇지 않으면 0을 반환하도록 하십시오 (계단 함수).
+3.	AND 게이트를 구현하는 가중치(w1, w2)와 편향(b)을 직접 찾아 설정하고, 입력 (0,0), (0,1), (1,0), (1,1)에 대한 출력을 확인하십시오.
+4.	OR 게이트를 구현하는 가중치와 편향을 찾아 설정하고, 동일한 입력에 대한 출력을 확인하십시오.
+
+●	모범 답안:
+
+import numpy as np
+
+# 1 & 2. 퍼셉트론 함수 정의
+def perceptron(x, w, b):
+    """
+    x: 입력 벡터 (numpy array)
+    w: 가중치 벡터 (numpy array)
+    b: 편향 (scalar)
+    """
+    # 가중치 합 계산
+    weighted_sum = np.dot(x, w) + b
+
+    # 활성화 함수 (계단 함수)
+    if weighted_sum > 0:
+        return 1
+    else:
+        return 0
+
+# 3. AND 게이트 구현
+# w1=0.5, w2=0.5, b=-0.7 등의 조합이 가능
+w_and = np.array([0.5, 0.5])
+b_and = -0.7
+
+print("--- AND Gate ---")
+inputs = [np.array(), np.array(), np.array(), np.array()]
+for x_input in inputs:
+    output = perceptron(x_input, w_and, b_and)
+    print(f"Input: {x_input}, Output: {output}")
+
+# 4. OR 게이트 구현
+# w1=0.5, w2=0.5, b=-0.2 등의 조합이 가능
+w_or = np.array([0.5, 0.5])
+b_or = -0.2
+
+print("\n--- OR Gate ---")
+for x_input in inputs:
+    output = perceptron(x_input, w_or, b_or)
+    print(f"Input: {x_input}, Output: {output}")
+---------------------------------------------------------------------------------------------
+문제 5.2: 손실 함수 및 역전파 수동 구현
+
+●	지시사항:
+1.	입력층(1개 노드), 은닉층(2개 노드), 출력층(1개 노드)으로 구성된 간단한 2층 신경망을 가정합니다. 활성화 함수는 시그모이드 함수를 사용합니다.
+2.	가중치 W1, b1, W2, b2를 임의로 초기화합니다.
+3.	순전파(Forward Pass): 입력 x=0.5, 정답 y=1에 대해 예측값 y_hat을 계산하는 과정을 코드로 작성하십시오.
+4.	손실 계산: 평균 제곱 오차(MSE) 손실 L=21(y−y^)2 을 계산하십시오.
+5.	역전파(Backward Pass): 연쇄 법칙(Chain Rule)에 따라 출력층에서부터 각 가중치(W2, b2, W1, b1)에 대한 손실 함수의 그래디언트(미분값)를 수동으로 계산하는 코드를 작성하십시오.
+
+●	모범 답안:
+
+import numpy as np
+
+# 활성화 함수 및 미분 함수 정의
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def sigmoid_derivative(x):
+    return sigmoid(x) * (1 - sigmoid(x))
+
+# 1 & 2. 네트워크 구조 및 가중치 초기화
+np.random.seed(42)
+x = 0.5
+y = 1
+
+W1 = np.random.randn(1, 2) # (input_dim, hidden_dim)
+b1 = np.random.randn(2)
+W2 = np.random.randn(2, 1) # (hidden_dim, output_dim)
+b2 = np.random.randn(1)
+
+# 3. 순전파 (Forward Pass)
+# 입력층 -> 은닉층
+z1 = np.dot(x, W1) + b1
+a1 = sigmoid(z1)
+
+# 은닉층 -> 출력층
+z2 = np.dot(a1, W2) + b2
+y_hat = sigmoid(z2)
+
+print(f"입력 x: {x}, 정답 y: {y}")
+print(f"예측 y_hat: {y_hat:.4f}")
+
+# 4. 손실 계산 (MSE)
+loss = 0.5 * (y - y_hat)**2
+print(f"손실 (MSE): {loss:.4f}")
+print("-" * 30)
+
+# 5. 역전파 (Backward Pass)
+print("--- 역전파 시작 ---")
+
+# 출력층의 그래디언트 (dLoss / dy_hat * dy_hat / dz2)
+# dLoss/dy_hat = -(y - y_hat)
+# dy_hat/dz2 = sigmoid_derivative(z2)
+delta2 = -(y - y_hat) * sigmoid_derivative(z2)
+print(f"delta2 (출력층 오차): {delta2:.4f}")
+
+# W2, b2에 대한 그래디언트
+# dLoss/dW2 = dLoss/dz2 * dz2/dW2 = delta2 * a1
+grad_W2 = np.outer(a1, delta2)
+grad_b2 = delta2
+print(f"grad_W2:\n{grad_W2}")
+
+# 은닉층의 그래디언트 (dLoss / dz2 * dz2 / da1 * da1 / dz1)
+# dLoss/da1 = np.dot(delta2, W2.T)
+# da1/dz1 = sigmoid_derivative(z1)
+delta1 = np.dot(delta2, W2.T) * sigmoid_derivative(z1)
+print(f"delta1 (은닉층 오차): {delta1}")
+
+# W1, b1에 대한 그래디언트
+# dLoss/dW1 = dLoss/dz1 * dz1/dW1 = delta1 * x
+grad_W1 = np.outer(x, delta1)
+grad_b1 = delta1
+print(f"grad_W1:\n{grad_W1}")
+
+# 이렇게 계산된 그래디언트(grad_W1, grad_b1 등)에 학습률(learning rate)을 곱하여
+# 기존 가중치에서 빼주면 가중치 업데이트가 이루어집니다.
+# W1_new = W1 - learning_rate * grad_W1
+
+---------------------------------------------------------------------------------------------
+문제 5.3: 과적합 방지를 위한 Dropout 적용 및 효과 비교
+
+●	지시사항:
+1.	TensorFlow/Keras를 사용하여 MNIST 데이터셋을 로드하고, 이미지를 0-1 사이로 정규화하십시오.
+2.	모델 1 (Baseline): 드롭아웃이 없는 간단한 DNN 모델을 구축하십시오 (예: Flatten -> Dense(128, activation='relu') -> Dense(10, activation='softmax')).
+3.	모델 1을 컴파일하고 20 에포크 동안 학습시키십시오. 학습 과정에서 검증 데이터(validation_data)를 사용하여 훈련 손실과 검증 손실을 기록하십시오.
+4.	모델 2 (Dropout): 모델 1의 은닉층(Dense(128)) 뒤에 Dropout(0.3) 레이어를 추가하여 새로운 모델을 구축하십시오.
+5.	모델 2를 동일한 조건으로 학습시키십시오.
+6.	두 모델의 훈련/검증 손실 곡선을 하나의 그래프에 시각화하여 드롭아웃의 효과를 비교 분석하십시오.
+
+●	모범 답안:
+
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Flatten, Dense, Dropout
+import matplotlib.pyplot as plt
+
+# 1. MNIST 데이터 준비
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+# 2. 모델 1: Baseline 모델
+model_base = Sequential()
+model_base.compile(optimizer='adam',
+                   loss='sparse_categorical_crossentropy',
+                   metrics=['accuracy'])
+
+# 3. 모델 1 학습
+print("--- Training Baseline Model ---")
+history_base = model_base.fit(x_train, y_train, epochs=20, 
+                              validation_data=(x_test, y_test), verbose=0)
+
+# 4. 모델 2: Dropout 적용 모델
+model_dropout = Sequential()
+model_dropout.compile(optimizer='adam',
+                      loss='sparse_categorical_crossentropy',
+                      metrics=['accuracy'])
+
+# 5. 모델 2 학습
+print("--- Training Dropout Model ---")
+history_dropout = model_dropout.fit(x_train, y_train, epochs=20, 
+                                    validation_data=(x_test, y_test), verbose=0)
+
+# 6. 학습 곡선 시각화
+plt.figure(figsize=(12, 6))
+plt.plot(history_base.history['loss'], 'b-', label='Baseline Train Loss')
+plt.plot(history_base.history['val_loss'], 'b--', label='Baseline Val Loss')
+plt.plot(history_dropout.history['loss'], 'r-', label='Dropout Train Loss')
+plt.plot(history_dropout.history['val_loss'], 'r--', label='Dropout Val Loss')
+plt.title('Effect of Dropout on Overfitting')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.grid(True)
+plt.ylim(0, 0.4) # y축 범위 조절
+plt.show()
+---------------------------------------------------------------------------------------------
+Section 6: 모델 검증 및 평가
+문제 6.1: K-Fold 교차 검증을 통한 모델 일반화 성능 평가
+
+●	지시사항:
+1.	breast_cancer 데이터셋과 LogisticRegression 모델을 준비하십시오. 데이터는 표준화를 적용하십시오.
+2.	sklearn.model_selection의 KFold를 n_splits=5, shuffle=True, random_state=42로 설정하여 교차 검증 분할기를 생성하십시오.
+3.	for 루프를 사용하여 5개의 폴드(fold)를 순회하며 다음을 수행하십시오.
+■	매번 다른 훈련/검증 인덱스를 받아 데이터를 분할합니다.
+■	모델을 훈련 데이터로 학습시킵니다.
+■	검증 데이터로 정확도(accuracy)를 평가하고 리스트에 저장합니다.
+4.	5개의 평가 점수의 평균과 표준편차를 계산하여 최종 모델 성능으로 보고하십시오.
+5.	(참고) cross_val_score 함수를 사용하면 위 과정을 더 간결하게 수행할 수 있습니다. 이 함수를 사용해서도 동일한 결과를 얻는지 확인해보십시오.
+
+●	모범 답안:
+
+import numpy as np
+from sklearn.datasets import load_breast_cancer
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import KFold, cross_val_score
+
+# 1. 데이터 및 모델 준비
+cancer = load_breast_cancer()
+X, y = cancer.data, cancer.target
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+model = LogisticRegression(max_iter=5000)
+
+# 2. KFold 분할기 생성
+kfold = KFold(n_splits=5, shuffle=True, random_state=42)
+
+# 3. for 루프를 이용한 교차 검증 수동 구현
+accuracies =
+for fold_idx, (train_index, val_index) in enumerate(kfold.split(X_scaled)):
+    # 데이터 분할
+    X_train, X_val = X_scaled[train_index], X_scaled[val_index]
+    y_train, y_val = y[train_index], y[val_index]
+
+    # 모델 학습 및 평가
+    model.fit(X_train, y_train)
+    score = model.score(X_val, y_val)
+    accuracies.append(score)
+    print(f"Fold {fold_idx+1} Accuracy: {score:.4f}")
+
+# 4. 결과 보고
+print("\n--- Manual K-Fold CV Results ---")
+print(f"Accuracies for each fold: {accuracies}")
+print(f"Average Accuracy: {np.mean(accuracies):.4f}")
+print(f"Standard Deviation: {np.std(accuracies):.4f}")
+
+# 5. cross_val_score 함수 활용
+scores = cross_val_score(model, X_scaled, y, cv=kfold, scoring='accuracy')
+print("\n--- cross_val_score Results ---")
+print(f"Accuracies for each fold: {scores}")
+print(f"Average Accuracy: {np.mean(scores):.4f}")
+print(f"Standard Deviation: {np.std(scores):.4f}")
+---------------------------------------------------------------------------------------------
+문제 6.2: 혼동 행렬 기반 평가 지표 계산
+
+●	지시사항:
+1.	이진 분류 문제에서 다음과 같은 혼동 행렬 결과가 주어졌다고 가정합니다.
+■	True Positive (TP) = 90
+■	False Positive (FP) = 10
+■	False Negative (FN) = 20
+■	True Negative (TN) = 80
+2.	위 값들을 사용하여 다음 4가지 평가 지표를 계산하는 함수를 작성하십시오.
+■	정확도(Accuracy): TP+TN+FP+FNTP+TN
+■	정밀도(Precision): TP+FPTP
+■	재현율(Recall): TP+FNTP
+■	F1-Score: 2×Precision+RecallPrecision×Recall
+3.	작성한 함수를 사용하여 각 지표 값을 출력하십시오.
+4.	(검증) Scikit-learn의 classification_report가 동일한 값을 출력하는지 확인하기 위해, 위 혼동 행렬에 해당하는 가상의 y_true와 y_pred를 만들어 결과를 비교해보십시오.
+
+●	모범 답안:
+
+import numpy as np
+from sklearn.metrics import classification_report
+
+# 1. 주어진 혼동 행렬 값
+TP, FP, FN, TN = 90, 10, 20, 80
+
+# 2. 평가 지표 계산 함수
+def calculate_metrics(tp, fp, fn, tn):
+    # 정확도 (Accuracy)
+    accuracy = (tp + tn) / (tp + tn + fp + fn)
+
+    # 정밀도 (Precision)
+    precision = tp / (tp + fp)
+
+    # 재현율 (Recall)
+    recall = tp / (tp + fn)
+
+    # F1-Score
+    f1_score = 2 * (precision * recall) / (precision + recall)
+
+    return {
+        "Accuracy": accuracy,
+        "Precision": precision,
+        "Recall": recall,
+        "F1-Score": f1_score
+    }
+
+# 3. 함수 실행 및 결과 출력
+metrics = calculate_metrics(TP, FP, FN, TN)
+print("--- 수동 계산 결과 (Positive 클래스 기준) ---")
+for name, value in metrics.items():
+    print(f"{name}: {value:.4f}")
+
+# 4. Scikit-learn으로 검증
+# 주어진 혼동 행렬에 맞는 가상 데이터 생성
+# y_true: 1이 TP+FN개, 0이 FP+TN개
+# y_pred: 1이 TP+FP개, 0이 FN+TN개
+y_true = np.array(* (TP + FN) + * (FP + TN))
+y_pred = np.array(*TP + *FN + *FP + *TN)
+
+print("\n--- Scikit-learn classification_report 검증 ---")
+# target_names=['class 0', 'class 1']에서 class 1이 Positive 클래스
+print(classification_report(y_true, y_pred))
+---------------------------------------------------------------------------------------------
+문제 6.3: GridSearchCV를 활용한 최적 하이퍼파라미터 탐색
+
+●	지시사항:
+1.	wine 데이터셋을 로드하고 StandardScaler로 표준화하십시오.
+2.	SVC 모델을 사용합니다.
+3.	탐색할 하이퍼파라미터의 후보군(grid)을 딕셔너리 형태로 정의하십시오.
+■	C: [0.1, 1, 10, 100]
+■	gamma: [1, 0.1, 0.01, 0.001]
+■	kernel: ['rbf']
+4.	sklearn.model_selection의 GridSearchCV에 모델, 파라미터 그리드, 교차 검증 폴드 수(cv=5)를 전달하여 객체를 생성하고 학습시키십시오.
+5.	학습이 완료된 후, best_params_와 best_score_ 속성을 사용하여 탐색 결과 가장 성능이 좋았던 최적의 파라미터 조합과 그때의 교차 검증 평균 점수를 출력하십시오.
+
+●	모범 답안:
+
+import pandas as pd
+from sklearn.datasets import load_wine
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV, train_test_split
+
+# 1. 데이터 준비 및 표준화
+wine = load_wine()
+X, y = wine.data, wine.target
+
+# GridSearchCV는 내부적으로 데이터를 분할하므로 전체 데이터를 사용해도 무방
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# 2. 모델 준비
+model = SVC()
+
+# 3. 하이퍼파라미터 그리드 정의
+param_grid = {
+    'C': [0.1, 1, 10, 100],
+    'gamma': [1, 0.1, 0.01, 0.001],
+    'kernel': ['rbf']
+}
+
+# 4. GridSearchCV 객체 생성 및 학습
+# n_jobs=-1은 사용 가능한 모든 CPU 코어를 사용하여 병렬로 학습을 진행
+grid_search = GridSearchCV(estimator=model, param_grid=param_grid, 
+                           cv=5, n_jobs=-1, verbose=2)
+
+print("GridSearchCV 학습 시작...")
+grid_search.fit(X_scaled, y)
+print("GridSearchCV 학습 완료.")
+
+# 5. 최적 파라미터 및 점수 출력
+print("\n--- GridSearchCV 결과 ---")
+print(f"최적 하이퍼파라미터: {grid_search.best_params_}")
+print(f"최고 교차 검증 정확도 점수: {grid_search.best_score_:.4f}")
+
+# (참고) 검색 결과를 DataFrame으로 확인
+results_df = pd.DataFrame(grid_search.cv_results_)
+print("\n상세 결과 (상위 5개):")
+print(results_df.sort_values(by='rank_test_score').head())
