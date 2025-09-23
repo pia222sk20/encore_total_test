@@ -1528,6 +1528,8 @@
 - **필요한 라이브러리:**
   ```bash
   pip install langchain langchain-community sentence-transformers faiss-cpu
+  pip install -U langchain-community
+  
   # HuggingFace Hub 모델 사용 시:
   # pip install huggingface_hub
   ```
