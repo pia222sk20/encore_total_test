@@ -17,7 +17,8 @@ try:
     from langchain.docstore.document import Document
     LANGCHAIN_AVAILABLE = True
     print("LangChain 라이브러리가 사용 가능합니다.")
-except ImportError:
+except ImportError as e:
+    print(e)
     LANGCHAIN_AVAILABLE = False
     print("LangChain 라이브러리가 설치되지 않았습니다.")
 

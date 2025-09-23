@@ -160,7 +160,8 @@ def problem_1_2():
     
     # 실험 4: reshape을 이용한 브로드캐스팅
     print("\n실험 4: reshape을 이용한 브로드캐스팅")
-    arr1d_col = arr1d.reshape(-1, 1)  # 열벡터로 변환
+    arr1d_new = np.array([100, 200])
+    arr1d_col = arr1d_new.reshape(-1, 1)  # (2,) -> (2,1) 형태로 변환
     result4 = arr2d + arr1d_col
     print(f"{arr2d}\n+\n{arr1d_col}\n=\n{result4}")
     

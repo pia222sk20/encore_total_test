@@ -77,10 +77,20 @@ def plot_validation_curves(X, y, model, param_name, param_range, model_name):
     test_std = np.std(test_scores, axis=1)
     
     plt.figure(figsize=(10, 6))
-    plt.plot(param_range, train_mean, 'o-', color='blue', label='Training score')
-    plt.fill_between(param_range, train_mean - train_std, train_mean + train_std, alpha=0.1, color='blue')
-    plt.plot(param_range, test_mean, 'o-', color='red', label='Cross-validation score')
-    plt.fill_between(param_range, test_mean - test_std, test_mean + test_std, alpha=0.1, color='red')
+    
+    # 1. param_range가 숫자인지 확인하고, 문자열이면 숫자 인덱스로 변환
+    is_numeric = all(isinstance(p, (int, float)) for p in param_range)
+    x_axis = param_range if is_numeric else np.arange(len(param_range))
+
+    # 2. 숫자형 x축(x_axis)을 사용해 그래프를 그림
+    plt.plot(x_axis, train_mean, color='blue', marker='o', markersize=5, label='Training score')
+    plt.fill_between(x_axis, train_mean - train_std, train_mean + train_std, alpha=0.15, color='blue')
+    plt.plot(x_axis, test_mean, color='green', linestyle='--', marker='s', markersize=5, label='Validation score')
+    plt.fill_between(x_axis, test_mean - test_std, test_mean + test_std, alpha=0.15, color='green')
+
+    # 3. 만약 x축이 인덱스였다면, 눈금 라벨을 원래 문자열로 설정
+    if not is_numeric:
+        plt.xticks(x_axis, param_range)
     
     plt.xlabel(param_name)
     plt.ylabel('Accuracy Score')
