@@ -3,10 +3,8 @@
 문제 4.2: LangChain을 활용한 RAG 시스템 (수정된 코드)
 """
 
-try:
-    # [수정] LangChain의 Document 클래스를 'LangChainDocument'라는 별칭으로 가져와 이름 충돌 방지
-    from langchain_core.documents import Document as LangChainDocument
-    # [수정] 최신 권장 사항에 따라 langchain_huggingface 패키지 사용
+try:    
+    from langchain_core.documents import Document as LangChainDocument    
     from langchain_huggingface import HuggingFaceEmbeddings
     from langchain_community.vectorstores import FAISS
     from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -25,7 +23,7 @@ from typing import List, Dict, Tuple, Any
 from dataclasses import dataclass
 import re
 
-# 사용자가 정의한 Document 클래스는 그대로 유지
+
 @dataclass
 class Document:
     """문서 데이터 클래스"""
@@ -230,12 +228,6 @@ def demonstrate_rag_queries():
             import traceback
             print(f"오류 발생: {e}")
             traceback.print_exc()
-
-# --- (analyze_retrieval_quality 및 다른 함수들은 원본과 동일하게 유지 가능) ---
-# ...
-# 이 아래 함수들은 분석 및 설명용이므로, 위 수정사항이 적용된
-# create_rag_system()을 호출하면 정상적으로 작동합니다.
-# ...
 
 def main():
     print("=== 문제 4.2: LangChain을 활용한 RAG 시스템 ===")
