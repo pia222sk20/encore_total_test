@@ -21,7 +21,7 @@ import random
 from typing import List, Dict, Any
 from dataclasses import dataclass
 
-# --- 데이터 클래스 및 프롬프터 (기존과 동일) ---
+# --- 데이터 클래스 및 프롬프터
 
 @dataclass
 class ReasoningStep:
@@ -132,8 +132,6 @@ def load_model_or_simulator():
         print("\n🔄 CoT 시뮬레이션 엔진을 사용합니다.")
         return ChainOfThoughtPrompter(), "Simulation"
 
-# --- 데모 함수들 (개선된 구조) ---
-
 def run_demonstration(title, problems, problem_type, prompter, generator, system_type):
     """통합된 데모 실행 함수"""
     print(f"\n{'='*20} {title} {'='*20}")
@@ -162,8 +160,6 @@ def run_demonstration(title, problems, problem_type, prompter, generator, system
             print(f" 2단계: 해결에 필요한 단계를 구성합니다.")
             print(f" 3단계: 단계에 따라 최종 답을 도출합니다.")
             print(f"\n 최종 답: (시뮬레이션된 답변)")
-
-# --- 분석 함수들 (기존과 동일) ---
 
 def analyze_cot_effectiveness():
     """CoT 기법의 효과성 분석"""
